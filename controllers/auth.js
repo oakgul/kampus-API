@@ -1,16 +1,12 @@
 // User modelini burada kullarak kullanıcı kaydı yapacağız..
 const User = require('../models/User');
 const CustomError = require('../helpers/CustomError');
+const asyncErrorWrapper = require('express-async-handler');
 
-const register = async (req,res,next) => {
+const register = asyncErrorWrapper(async (req,res,next) => {
 
     // POST DATA
-    const name = 'Elif';
-    const surname = 'Cebe';
-    const email = 'elif@mail.com';
-    const password = '123456';
-    const gender = 'Kadın';
-    const department = 'Kimya Teknolojileri'
+    const {name,surname,email,password,gender,department} = req.body;
 
     const user = await User.create({
         name,
@@ -19,7 +15,6 @@ const register = async (req,res,next) => {
         password,
         gender,
         department
-
     }) 
 
     res
@@ -28,7 +23,7 @@ const register = async (req,res,next) => {
             success : true,
             data : user
         });
-};
+});
 
 module.exports = {
     register

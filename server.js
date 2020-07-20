@@ -15,6 +15,10 @@ connectDatabase();
 
 
 const app = express();
+
+// req.body - consolda gözükmesi için (Eskiden bodyparser kullanıyorduk ama artık express ile geliyor)
+app.use(express.json());
+
 const PORT = process.env.PORT;
 
 // Routers
