@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -57,6 +58,25 @@ const UserSchema = new Schema({
         default : false
     }
     
+});
+
+// Database'e kaydetmeden hemen önce bu kısım (pre) çalışır.
+UserSchema.pre('save', function(next) {
+
+    // Herhangi bir update işleminde password değişmemişse password tekrardan hash'lenmesin!
+    if(!this.isModified('password')) {
+        next();
+    }
+
+    // Parola hash'leme
+    bcrypt.genSalt(10, (err, salt) => {
+        if(err) next(err);
+        bcrypt.hash(this.password, salt, (err, hash) => {
+            if(err) next(err);
+            this.password = hash;
+            next();
+        });
+    });
 });
 
 module.exports = mongoose.model("User", UserSchema);

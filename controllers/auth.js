@@ -5,9 +5,10 @@ const asyncErrorWrapper = require('express-async-handler');
 
 const register = asyncErrorWrapper(async (req,res,next) => {
 
-    // POST DATA
+    // Front-end'den gelen req.body
     const {name,surname,email,password,gender,department} = req.body;
 
+    // Kullanıcının oluşturulması
     const user = await User.create({
         name,
         surname,
@@ -15,7 +16,7 @@ const register = asyncErrorWrapper(async (req,res,next) => {
         password,
         gender,
         department
-    }) 
+    }); 
 
     res
         .status(200)
