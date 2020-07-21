@@ -18,6 +18,10 @@ const register = asyncErrorWrapper(async (req,res,next) => {
         department
     }); 
 
+    const token = user.generateJwtFromUser();
+    
+    console.log(token);
+
     res
         .status(200)
         .json({

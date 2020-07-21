@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new Schema({
 
@@ -15,7 +16,7 @@ const UserSchema = new Schema({
     email : {
         type : String,
         required : [true, "email girilmesi zorunludur, lütfen bir email yazınız!"],
-        unique : [true, "Bu email adresi başka biri tarafından kullanılıyor, lütfen başka bir email yazınız!"],
+        unique : true,
         match : [
             /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
             "Düzgün olmayan email adresi, lütfen email adresinizi kontrol edin!"
@@ -59,6 +60,22 @@ const UserSchema = new Schema({
     }
     
 });
+
+// UserSchema Methods - JWT (Json Web Token)
+UserSchema.methods.generateJwtFromUser = function() {
+
+    const {JWT_SECRET_KEY, JWT_EXPIRE} = process.env; 
+
+    const payload = {
+        id : this.id,
+        name : this.name
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET_KEY, {
+        expiresIn : JWT_EXPIRE
+    });
+    return token;
+};
 
 // Database'e kaydetmeden hemen önce bu kısım (pre) çalışır.
 UserSchema.pre('save', function(next) {
