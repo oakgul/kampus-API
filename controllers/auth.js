@@ -3,6 +3,7 @@ const User = require('../models/User');
 const CustomError = require('../helpers/CustomError');
 const asyncErrorWrapper = require('express-async-handler');
 const { sendJwtToClient } = require('../helpers/tokenHelpers');
+const { validateUserInput, comparePassword } = require('../helpers/inputHelpers');
 
 const register = asyncErrorWrapper(async (req,res,next) => {
 
@@ -23,14 +24,22 @@ const register = asyncErrorWrapper(async (req,res,next) => {
 });
 
 const login = asyncErrorWrapper(async (req,res,next) => {
-    const { email, password } = req.body;
-    console.log(email, password);
 
-    res
-        .status(200)
-        .json({
-            success : true
-        });
+    const { email, password } = req.body;
+    if(!validateUserInput(email,password)) {
+        return next(new CustomError('Lütfen Input alanlarını kontrol ediniz!',400));
+    }
+
+    // User modelini oluştururken password alanı için "select:false" yapmıştık (Güvenlik için)
+    // ama burada password'e ihtiyacımız olduğu için select kullanarak password'un de gönderilmesini istiyoruz
+    const user = await User.findOne({email}).select('+password');
+    
+    // hashlenmiş ve normal password eşleşiyor mu?
+    if(!comparePassword(password, user.password)) {
+        return next(new CustomError('Şifre Yanlış! Lütfen yazdığınız şifreyi kontrol edin!',400));
+    }
+
+    sendJwtToClient(user,res);
 });
 
 const getUser = (req,res,next) => {
