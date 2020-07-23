@@ -18,11 +18,16 @@ const accessToken = getAccessTokenFromHeader(req);
 
 jwt.verify(accessToken, JWT_SECRET_KEY, (err,decoded) => {
     if(err) {
-        return next(new CustomError("Bu route'a erişiminiz yok!", 401));
+        return next(
+            new CustomError("Bu route'a erişiminiz yok!", 401)
+        );
     }
-    console.log(decoded);
-    next();
 
+    req.user = {
+        id : decoded.id,
+        name : decoded.name
+    }
+    next();
     })
 };
 

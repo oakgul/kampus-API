@@ -22,6 +22,29 @@ const register = asyncErrorWrapper(async (req,res,next) => {
     sendJwtToClient(user,res);
 });
 
+const login = asyncErrorWrapper(async (req,res,next) => {
+    const { email, password } = req.body;
+    console.log(email, password);
+
+    res
+        .status(200)
+        .json({
+            success : true
+        });
+});
+
+const getUser = (req,res,next) => {
+    res.json({
+        success : true,
+        data : {
+            id : req.user.id,
+            name : req.user.name
+        }
+    });
+};
+
 module.exports = {
-    register
+    register,
+    getUser,
+    login
 };
