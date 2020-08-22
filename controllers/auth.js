@@ -93,14 +93,16 @@ const imageUpload = asyncErrorWrapper(async (req,res,next) => {
 // Forgot password
 const forgotPassword = asyncErrorWrapper(async (req,res,next) => {
     const resetEmail = req.body.email;
-    const user = User.findOne({email: resetEmail});
+    const user = await User.findOne({email: resetEmail});
 
     // Email'e ait kullanıcı var mı?
-    if(!User) {
+    if(!user) {
         return next(new CustomError('Böyle bir kullanıcı bulunamadı!',400));
     }
 
     const resetPasswordToken = user.getResetPasswordTokenFromUser();
+
+    await user.save();
 
     res
         .status(200)

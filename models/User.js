@@ -86,6 +86,16 @@ UserSchema.methods.generateJwtFromUser = function() {
 
 UserSchema.methods.getResetPasswordTokenFromUser = function() {
     const randomHexString = crypto.randomBytes(15).toString('hex');
+    const {RESET_PASSWORD_EXPIRE} = process.env;
+
+    const resetPasswordToken = crypto
+        .createHash('SHA256')
+        .update(randomHexString)
+        .digest('hex');
+
+        this.resetPasswordToken = resetPasswordToken;
+        // reset password token süresi - 1 saat (3600000)
+        this.resetPasswordExpire = Date.now() + parseInt(RESET_PASSWORD_EXPIRE);
 }
 
 // Database'e kaydetmeden hemen önce bu kısım (pre) çalışır.
