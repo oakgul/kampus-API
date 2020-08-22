@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto'); 
 
 const UserSchema = new Schema({
 
@@ -57,6 +58,12 @@ const UserSchema = new Schema({
     blocked : {
         type : Boolean,
         default : false
+    },
+    resetPasswordToken : {
+        type : String
+    },
+    resetPasswordExpire : {
+        type : Date
     }
     
 });
@@ -76,6 +83,10 @@ UserSchema.methods.generateJwtFromUser = function() {
     });
     return token;
 };
+
+UserSchema.methods.getResetPasswordTokenFromUser = function() {
+    const randomHexString = crypto.randomBytes(15).toString('hex');
+}
 
 // Database'e kaydetmeden hemen önce bu kısım (pre) çalışır.
 UserSchema.pre('save', function(next) {

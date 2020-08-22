@@ -69,9 +69,52 @@ const getUser = (req,res,next) => {
     });
 };
 
+// Profile image upload
+const imageUpload = asyncErrorWrapper(async (req,res,next) => {
+
+    // id'den kullanıcıyı bul ve yüklenen profil fotoğrafını veritabanında update et
+    const user = await User.findByIdAndUpdate(req.user.id, {
+        "profile_image" : req.savedProfileImage
+    }, {
+        // Güncellenmiş yeni kullanıcıyı göstermesi için, true yapmassak eski hali gözükür
+        new : true,     
+        runValidators : true
+    });
+
+    res
+        .status(200)
+        .json({
+            success : true,
+            message : 'Profil fotoğrafı yüklendi..',
+            data : user
+        });
+});
+
+// Forgot password
+const forgotPassword = asyncErrorWrapper(async (req,res,next) => {
+    const resetEmail = req.body.email;
+    const user = User.findOne({email: resetEmail});
+
+    // Email'e ait kullanıcı var mı?
+    if(!User) {
+        return next(new CustomError('Böyle bir kullanıcı bulunamadı!',400));
+    }
+
+    const resetPasswordToken = user.getResetPasswordTokenFromUser();
+
+    res
+        .status(200)
+        .json({
+            success : true,
+            message : 'Reset Password Token gönderildi!'
+        })
+});
+
 module.exports = {
     register,
     login,
     logout,
-    getUser
+    getUser,
+    imageUpload,
+    forgotPassword
 };
