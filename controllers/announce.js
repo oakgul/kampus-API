@@ -31,6 +31,7 @@ const getAllAnnounce = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
+// Bir duyruyu getir
 const getSingleAnnounce = asyncErrorWrapper(async (req,res,next) => {
     const { id } = req.params;
 
@@ -64,9 +65,22 @@ const editAnnounce = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
+const deleteAnnounce = asyncErrorWrapper(async(req,res,next) => {
+    const { id } = req.params;
+    await Announce.findByIdAndDelete(id);
+
+    return res
+        .status(200)
+        .json({
+            success : true,
+            message : 'Duyuru Silindi!'
+        });
+});
+
 module.exports = {
     shareNewAnnounce,
     getAllAnnounce,
     getSingleAnnounce,
-    editAnnounce
+    editAnnounce,
+    deleteAnnounce
 }

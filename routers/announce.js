@@ -1,13 +1,14 @@
 const express = require('express');
 const { getAccessToRoute, getAnnounceOwnerAccess } = require('../middlewares/auth') ;
 const { checkAnnounceExist } = require('../middlewares/databaseErrorHelpers');
-const { shareNewAnnounce, getAllAnnounce, getSingleAnnounce, editAnnounce } = require('../controllers/announce');
+const { shareNewAnnounce, getAllAnnounce, getSingleAnnounce, editAnnounce, deleteAnnounce } = require('../controllers/announce');
 
 const router = express.Router();
 
 router.get('/', getAccessToRoute, getAllAnnounce);
 router.get('/:id', getAccessToRoute, checkAnnounceExist, getSingleAnnounce);
 router.post('/share', getAccessToRoute, shareNewAnnounce);
-router.put('/:id/edit', [getAccessToRoute, checkAnnounceExist, getAnnounceOwnerAccess], editAnnounce);
+router.put('/:id', [getAccessToRoute, checkAnnounceExist, getAnnounceOwnerAccess], editAnnounce);
+router.delete('/:id', [getAccessToRoute, checkAnnounceExist, getAnnounceOwnerAccess], deleteAnnounce);
 
 module.exports = router;
