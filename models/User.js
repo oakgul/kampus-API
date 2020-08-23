@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto'); 
+const Announce = require('./Announce'); 
 
 const UserSchema = new Schema({
 
@@ -115,6 +116,13 @@ UserSchema.pre('save', function(next) {
             this.password = hash;
             next();
         });
+    });
+});
+
+// Kullanıcı silindiğinde duyurularını da sil.
+UserSchema.post('remove', async function() {
+    await Announce.deleteMany({
+        user : this._id
     });
 });
 
