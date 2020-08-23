@@ -96,6 +96,7 @@ UserSchema.methods.getResetPasswordTokenFromUser = function() {
         this.resetPasswordToken = resetPasswordToken;
         // reset password token süresi - 1 saat (3600000)
         this.resetPasswordExpire = Date.now() + parseInt(RESET_PASSWORD_EXPIRE);
+        return resetPasswordToken;
 }
 
 // Database'e kaydetmeden hemen önce bu kısım (pre) çalışır.
