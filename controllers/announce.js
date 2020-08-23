@@ -44,8 +44,29 @@ const getSingleAnnounce = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
+// Duyuru güncelle.
+const editAnnounce = asyncErrorWrapper(async (req,res,next) => {
+    const { id } = req.params;
+    const { title, content } = req.body;
+
+    let announce = await Announce.findById(id);
+
+    announce.title = title; 
+    announce.content = content; 
+
+    announce = await announce.save();
+
+    return res
+        .status(200)
+        .json({
+            success : true,
+            data : announce
+        });
+});
+
 module.exports = {
     shareNewAnnounce,
     getAllAnnounce,
-    getSingleAnnounce
+    getSingleAnnounce,
+    editAnnounce
 }
