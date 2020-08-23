@@ -6,10 +6,6 @@ const getSingleUser = asyncErrorWrapper(async (req,res,next) => {
     const { id } = req.params;
     const user = await User.findById(id);
 
-    if(!user) {
-        return next(new CustomError('Bu id hiçbir kullanıcı ile eşleşmedi! Kullanıcı bulunamadı!',400));
-    }
-
     return res
         .status(200)
         .json({
@@ -18,4 +14,19 @@ const getSingleUser = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
-module.exports = { getSingleUser };
+const getAllUsers = asyncErrorWrapper(async (req,res,next) => {
+    
+    const users = await User.find();
+
+    return res
+        .status(200)
+        .json({
+            success : true,
+            data : users
+        });
+});
+
+module.exports = { 
+    getSingleUser,
+    getAllUsers
+};
