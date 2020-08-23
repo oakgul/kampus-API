@@ -1,8 +1,9 @@
 const User = require('../models/User');
+const Announce = require('../models/Announce');
 const CustomError = require('../helpers/CustomError');
 const asyncErrorWrapper = require('express-async-handler');
 
-// Kullanıcının olup olmadığını kontrol et
+// Kullanıcının olup olmadığını kontrol et.
 const checkUserExist = asyncErrorWrapper(async (req,res,next) => {
     const { id } = req.params;
     const user = await User.findById(id);
@@ -13,4 +14,18 @@ const checkUserExist = asyncErrorWrapper(async (req,res,next) => {
     next();
 });
 
-module.exports = { checkUserExist };
+// Duyurunun olup olmadığını kontrol et.
+const checkAnnounceExist = asyncErrorWrapper(async (req,res,next) => {
+    const { id } = req.params;
+    const announce = await Announce.findById(id);
+
+    if(!announce) {
+        return next(new CustomError('Bu id hiçbir duyuru ile eşleşmedi! Duyuru bulunamadı!',400));
+    }
+    next();
+});
+
+module.exports = { 
+    checkUserExist,
+    checkAnnounceExist
+};

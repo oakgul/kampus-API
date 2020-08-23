@@ -19,7 +19,7 @@ const shareNewAnnounce = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
-// Tüm duyurular
+// Tüm duyuruları getir.
 const getAllAnnounce = asyncErrorWrapper(async (req,res,next) => {
     const announces = await Announce.find();
 
@@ -31,7 +31,21 @@ const getAllAnnounce = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
+const getSingleAnnounce = asyncErrorWrapper(async (req,res,next) => {
+    const { id } = req.params;
+
+    const announce = await Announce.findById(id);
+
+    return res
+        .status(200)
+        .json({
+            success : true,
+            data : announce
+        });
+});
+
 module.exports = {
     shareNewAnnounce,
-    getAllAnnounce
+    getAllAnnounce,
+    getSingleAnnounce
 }
