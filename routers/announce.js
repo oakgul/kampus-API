@@ -1,8 +1,9 @@
 const express = require('express');
-const { getAllAnnounces } = require('../controllers/announce');
+const { getAccessToRoute } = require('../middlewares/auth') 
+const { shareNewAnnounce } = require('../controllers/announce');
 
 const router = express.Router();
 
-router.get('/', getAllAnnounces);
+router.post('/share', getAccessToRoute, shareNewAnnounce);
 
 module.exports = router;
