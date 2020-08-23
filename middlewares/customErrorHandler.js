@@ -12,6 +12,9 @@ const customErrorHandler = (err,req,res,next) => {
     if(err.code === 11000) {
         customError = new CustomError('Duplicate Key - Varolan bir input girdiniz, lütfen inputları kontrol edin!', 400);
     }
+    if(err.name === 'CastError') {
+        customError = new CustomError('Lütfen id/kullanıcıyı yi kontrol edin! Böyle bir kullanıcı bulunamadı!', 400);
+    }
 
     res
     .status(customError.status || 500)
