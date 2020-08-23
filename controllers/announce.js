@@ -19,6 +19,19 @@ const shareNewAnnounce = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
+// Tüm duyurular
+const getAllAnnounce = asyncErrorWrapper(async (req,res,next) => {
+    const announces = await Announce.find();
+
+    return res
+        .status(200)
+        .json({
+            success : true,
+            data : announces
+        });
+});
+
 module.exports = {
-    shareNewAnnounce
+    shareNewAnnounce,
+    getAllAnnounce
 }
