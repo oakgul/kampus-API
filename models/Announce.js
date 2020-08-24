@@ -15,6 +15,7 @@ const AnnounceSchema = new Schema({
         minlength : [10, 'Duyuru çok kısa, lütfen en az 10 karakterlik açıklama yazınız!']
     },
     
+    // adres çubuğunda duyurunun başlığının aralarında "-" koyarak gösterir.
     slug : String,
 
     createdAt : {
@@ -25,7 +26,15 @@ const AnnounceSchema = new Schema({
         type : mongoose.Schema.ObjectId,
         required : true,
         ref : 'User'
-    }
+    },
+
+    // answer id'lerini tutacağı için array. Eklenen her bir cevabın id'sini tutmaya yarar.
+    answers : [
+        {
+            type : mongoose.Schema.ObjectId,
+            ref : 'Answer'
+        }
+    ]
 });
 
 AnnounceSchema.pre('save', function(next) {

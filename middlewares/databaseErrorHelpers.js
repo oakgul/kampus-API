@@ -16,8 +16,8 @@ const checkUserExist = asyncErrorWrapper(async (req,res,next) => {
 
 // Duyurunun olup olmadığını kontrol et.
 const checkAnnounceExist = asyncErrorWrapper(async (req,res,next) => {
-    const { id } = req.params;
-    const announce = await Announce.findById(id);
+    const announce_id = req.params.id || req.params.announce_id;
+    const announce = await Announce.findById(announce_id);
 
     if(!announce) {
         return next(new CustomError('Bu id hiçbir duyuru ile eşleşmedi! Duyuru bulunamadı!',400));
