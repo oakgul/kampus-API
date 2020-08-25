@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Announce = require('../models/Announce');
+const Answer = require('../models/Answer');
 const CustomError = require('../helpers/CustomError');
 const asyncErrorWrapper = require('express-async-handler');
 
@@ -25,7 +26,23 @@ const checkAnnounceExist = asyncErrorWrapper(async (req,res,next) => {
     next();
 });
 
+const checkAnnounceAndAnswerExist = asyncErrorWrapper(async (req,res,next) => {
+    const announce_id = req.params.announce_id;
+    const answer_id = req.params.answer_id;
+
+    const answer = await Answer.findOne({
+        _id : answer_id,
+        announce : announce_id
+    });
+
+    if(!answer) {
+        return next(new CustomError('Bu id hiçbir cevap ile eşleşmedi! Soruyla ilişkili cevap bulunamadı!',400));
+    }
+    next();
+});
+
 module.exports = { 
     checkUserExist,
-    checkAnnounceExist
+    checkAnnounceExist,
+    checkAnnounceAndAnswerExist
 };

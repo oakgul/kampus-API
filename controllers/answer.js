@@ -39,7 +39,21 @@ const getAllAnswersByAnnounce = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
+// Bir cevap getir
+const getSingleAnswer = asyncErrorWrapper(async (req,res,next) => {
+    const { answer_id } = req.params;        
+    const answer = await Answer.findById(answer_id).populate('announce').populate('user');
+
+    return res
+        .status(200)
+        .json({
+            success : true,
+            data : answer
+        });
+});
+
 module.exports = {
     addNewAnswerToAnnounce,
-    getAllAnswersByAnnounce
+    getAllAnswersByAnnounce,
+    getSingleAnswer
 };
