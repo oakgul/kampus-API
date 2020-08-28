@@ -84,9 +84,33 @@ const editAnswer = asyncErrorWrapper(async (req,res,next) => {
         });
 });
 
+// Cevabı sil - Bunu models kısmından hooks ile de yapabilirdik, farklı şekilde yapmak istedim.
+const deleteAnswer = asyncErrorWrapper(async (req,res,next) => {
+    const { answer_id } = req.params;       
+    const { announce_id } = req.params;       
+    
+    // id'sine göre bul ve kaldır.
+    await Answer.findByIdAndRemove(answer_id);
+
+    // bu cevabın bulunduğu announce da bulunan cevaplar kısmından da silmemiz gerek.
+    const announce = await Announce.findById(announce_id);
+    // announce ait cevaplar içinden (array) answer_id'yi bul ve 1 değeri (bulunan) sil.
+    announce.answers.splice(announce.answers.indexOf(answer_id), 1);
+
+    await announce.save();
+
+    return res
+        .status(200)
+        .json({
+            success : true,
+            message : 'Cevap silindi!'
+        });
+});
+
 module.exports = {
     addNewAnswerToAnnounce,
     getAllAnswersByAnnounce,
     getSingleAnswer,
-    editAnswer
+    editAnswer,
+    deleteAnswer
 };
