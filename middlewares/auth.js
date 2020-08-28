@@ -2,6 +2,7 @@ const CustomError = require('../helpers/CustomError');
 const asyncErrorWrapper = require('express-async-handler');
 const User = require('../models/User');
 const Announce = require('../models/Announce');
+const Answer = require('../models/Answer');
 const jwt = require('jsonwebtoken');
 const { isTokenIncluded, getAccessTokenFromHeader } = require('../helpers/tokenHelpers');
 
@@ -59,8 +60,22 @@ const getAnnounceOwnerAccess = asyncErrorWrapper( async(req,res,next) => {
     next();
 });
 
+// Cevabı sadece sahibi değiştirebilir.
+const getAnswerOwnerAccess = asyncErrorWrapper( async(req,res,next) => {
+    const userId = req.user.id;
+    const answerId = req.params.answer_id;
+
+    const answer = await Answer.findById(answerId);
+
+    if (answer.user != userId) {
+        return next(new CustomError('Cevabı sadece sahibi değiştirebilir!',403));
+    }
+    next();
+});
+
 module.exports = {
     getAccessToRoute,
     getAdminAccess,
-    getAnnounceOwnerAccess
+    getAnnounceOwnerAccess,
+    getAnswerOwnerAccess
 };
