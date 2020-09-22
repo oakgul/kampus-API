@@ -6,7 +6,7 @@ const { shareNewAnnounce, getAllAnnounce, getSingleAnnounce, editAnnounce, delet
 
 const router = express.Router();
 
-router.get('/', getAccessToRoute, getAllAnnounce);
+router.get('/',  getAllAnnounce);   // getAccessToRoute, ekle
 router.get('/:id', getAccessToRoute, checkAnnounceExist, getSingleAnnounce);
 router.post('/share', getAccessToRoute, shareNewAnnounce);
 router.put('/:id', [getAccessToRoute, checkAnnounceExist, getAnnounceOwnerAccess], editAnnounce);
